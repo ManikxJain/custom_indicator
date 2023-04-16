@@ -1,0 +1,49 @@
+indicator("custom_indicator")
+a = ta.rsi(close, 14)
+
+
+isRSI = if a > 50
+    10
+else
+    -10
+
+b = ta.sar(0.02, 0.02, 0.2)
+
+isSAR = if b < close
+    10
+else
+    -10
+
+c = ta.ema(close, 200)
+
+isEMA = if c < close
+    10
+else
+    -10
+
+length = input(100)
+spike = close - open
+x = ta.stdev(spike,length)
+y = ta.stdev(spike,length) * -1
+
+isVol = if spike > x
+    20
+else if spike < y
+    -20
+
+isLong = if isRSI == 10
+    if isSAR == 10
+        if isEMA == 10
+            10
+
+isShort = if isRSI == -10
+    if isSAR == -10
+        if isEMA == -10
+            -10
+
+plot(isVol, "Volatility", color.white, 2, plot.style_cross)
+plot(isLong,"Long Signal", color.green, 2, plot.style_cross)
+plot(isShort, "Short Signal", color.red, 2, plot.style_cross)
+col = color.rgb(0,0,0,0)
+plot(50, "Ignore1", color.new(col, 0), 0, plot.style_cross)
+plot(-50, "Ignore1", color.new(col, 0), 0, plot.style_cross)
